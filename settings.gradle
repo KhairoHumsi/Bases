@@ -1,0 +1,3 @@
+include ':bases'
+include ':app'
+rootProject.name = "Bases Sample"
