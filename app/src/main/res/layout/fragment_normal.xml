@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.khairo.basessample.ui.normal.NormalViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".NormalFragment">
+        tools:context=".ui.normal.NormalFragment">
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/adapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick='@{()-> viewModel.open("adapter")}'
+            android:text="@string/open_adapter"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toTopOf="@id/dialog"
+            app:layout_constraintEnd_toStartOf="@id/dialog"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick='@{()-> viewModel.open("dialog")}'
+            android:text="@string/open_dialog_fragment"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/adapter"
+            app:layout_constraintTop_toBottomOf="@id/adapter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

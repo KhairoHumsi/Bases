@@ -42,21 +42,27 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, V : ViewDataBinding>(
 
     /**
      * Selection Map
+     * You need to use it if you want to select mutable items at once
      */
     private val selectionMap = HashMap<Int, T>()
 
+    /** Add item to your selection */
     fun addToSelectionMap(position: Int, model: T) {
         selectionMap[position] = model
     }
 
+    /** Remove the item from your selection */
     fun removeFromSelectionMap(position: Int) {
         selectionMap.remove(position)
     }
 
+    /** Check if the item is selected or not depend on it's [position] */
     fun isSelectionMapItemSelected(position: Int): Boolean = selectionMap[position] != null
 
+    /** Getting the full [selectionMap] */
     fun getSelectionMap(): HashMap<Int, T> = selectionMap
 
+    /** Clear your [selectionMap] */
     fun clearSelectionMap() {
         selectionMap.clear()
     }
@@ -64,33 +70,55 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, V : ViewDataBinding>(
 
     private var items = Collections.emptyList<T>()
 
+    /** Adding the list to your adapter. */
     fun setItems(list: List<T>) {
         if (!isPagingEnabled())
             items = list
     }
 
+    /** Getting the full list. */
     fun getItems(): List<T> = items
+
+    /** Get single item from your list dedent on the position you want. */
     fun getRow(position: Int): T = items[position]
+
+    /**
+     * Remove item from your list dedent on the position you want, but you need to use notifyItemRemoved(position)
+     * to see the changes in your adapter
+     * */
     fun removeRow(position: Int) {
         if (!isPagingEnabled())
             items.removeAt(position)
     }
 
+    /**
+     * Add item to your list dedent on the position you want, but you need to use notifyItemInserted(position)
+     * to see the changes in your adapter
+     * */
     fun addRow(position: Int, model: T) {
         if (!isPagingEnabled())
             items.add(position, model)
     }
 
+    /**
+     * Add item to your list, but you need to use notifyItemInserted(items.size)
+     * to see the changes in your adapter
+     * */
     fun addRow(model: T) {
         if (!isPagingEnabled())
             items.add(model)
     }
 
+    /**
+     * Update item in your list, but you need to use notifyItemChanged(position)
+     * to see the changes in your adapter
+     * */
     fun updateRow(position: Int, model: T) {
         if (!isPagingEnabled())
             items[position] = model
     }
 
+    /** This function here to init your [binding] */
     protected abstract fun initBinding(view: View)
 
     private fun inflateView(viewGroup: ViewGroup): View =
@@ -142,6 +170,7 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, V : ViewDataBinding>(
         animationEnabled = check
     }
 
+    /** To set the animation setting */
     fun setAnimationInfo(
         type: Int = Animation.RELATIVE_TO_SELF, fromX: Float = 0f,
         toX: Float = 1f, fromY: Float = 0f, toY: Float = 1f
