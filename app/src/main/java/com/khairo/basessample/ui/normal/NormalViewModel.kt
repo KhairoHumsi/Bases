@@ -9,10 +9,11 @@ class NormalViewModel : ViewModel() {
     fun open(type: String) {
         MainActivity.instance.apply {
             when (type) {
-                "dialog" ->  dialogFragment.apply {
+                "dialog" -> dialogFragment.apply {
                     isCancelable = true
                     fragmentTransaction =
-                        MainActivity.instance.supportFragmentManager.beginTransaction().apply { addToBackStack(null) }
+                        MainActivity.instance.supportFragmentManager.beginTransaction()
+                            .apply { addToBackStack(null) }
                     show(fragmentTransaction, "dialogFragment")
                 }
 

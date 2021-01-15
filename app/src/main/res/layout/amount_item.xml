@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -21,17 +21,17 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardElevation="@dimen/_3sdp"
-        app:cardCornerRadius="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
-        android:layout_marginBottom="@dimen/_8sdp">
+        android:layout_marginBottom="@dimen/_8sdp"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardElevation="@dimen/_3sdp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/amountId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick='@{()-> viewHolder.check(model.amount)}'
-            android:background='@{viewModel.amount == model.amount ? @color/dark_blue : @color/white}'>
+            android:background='@{viewModel.amount == model.amount ? @color/dark_blue : @color/white}'
+            android:onClick='@{()-> viewHolder.check(model.amount)}'>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="@dimen/_80sdp"
