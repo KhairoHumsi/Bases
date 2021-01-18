@@ -19,6 +19,7 @@ Useful library to help Android developers handle databinding, adapters and pagin
   - [BaseLocalizationActivity](#baseLocalizationActivity)
   - [BaseFragment](#baseFragment)
   - [BaseDialogFragment](#baseDialogFragment)
+  - [BaseAdapter](#baseAdapter)
 - [Contributing](#contributing)
 
 
@@ -193,6 +194,122 @@ class DialogFragment : BaseDialogFragment<FragmentDialogBinding>(R.layout.fragme
 }
 ```
 
+
+
+### BaseAdapter
+
+To use it you have to add `implementation "androidx.paging:paging-runtime-ktx:$paging_version"`.
+
+**Step 1.** Add the dependency in `/app/build.gradle` :
+
+```gradle
+dependencies {
+    ...
+     //paging
+    implementation "androidx.paging:paging-runtime-ktx:3.0.0-alpha12"
+}
+```
+**Step 2.** Change your item xml layout `viewGroup` from any `viewGroup` to `layout` and pass the your data class to the xml like bellow:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.khairo.basessample.models.amount.AmountModel" />
+    </data>
+  
+  ....
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:gravity="center"
+                android:text='@{"" + model.amount + " USD"}'
+                android:textColor='@{viewModel.amount == model.amount ? @color/white : @color/black}'
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/full_names" />
+  ....
+</layout>
+```
+
+**Step 3.** Change the `RecyclerView` to `BaseAdapter` and override the functions like bellow:
+
+```kotlin
+class AnimatedNormalAdapter : BaseAdapter<AmountModel, BaseViewHolder<AmountModel>, AmountItemBinding>(R.layout.amount_item) {
+
+    /** This function here to init the [binding] using bind function */
+    override fun initBinding(view: View) {
+        binding = AmountItemBinding.bind(view)
+    }
+
+    /** This function here to init the [ViewHolder] */
+    override fun initViewHolder(layout: Int, view: View): BaseViewHolder<AmountModel> = ViewHolder()
+
+    /** This class here is your [ViewHolder], but you have to extend the ViewHolders and pass the [binding] */
+    inner class ViewHolder : ViewHolders(binding = binding) {
+
+        /** This override function comes from the [BaseViewHolder] */
+        override fun bind(model: AmountModel, position: Int) {
+            binding.let {
+                it.model = model
+                it.executePendingBindings()
+            }
+        }
+    }
+}
+```
+
+**Step 4.** In your `Activity` or `Fragment` init you adapter like bellow:
+
+```kotlin
+class AdapterFragment : BaseFragment<AdapterFragmentBinding>(R.layout.adapter_fragment) {
+
+    private lateinit var viewModel: AdapterViewModel
+    private lateinit var animatedNormalAdapter: AnimatedNormalAdapter
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(AdapterViewModel::class.java)
+        animatedNormalAdapter = AnimatedNormalAdapter(viewModel)
+        binding.amount.adapter = animatedNormalAdapter
+
+        viewModel.amountLiveData.observe(requireActivity(), {
+            animatedNormalAdapter.apply {
+                /**
+                 * This function below to tell the adapter that you want paging.
+                 * setPagingEnabled(true)
+                 * it's by default false.
+                 *
+                 * NOTE:- You cant use [setItems] function or any of the other functions
+                 * Which deal with [items] which is a variable in [BaseAdapter].
+                 *
+                 * You need to use [submitData] with your [PagingData<T>] as any paging logic.
+                 */
+                setPagingEnabled(false)
+
+                /**
+                 * This function here to tell the adapter that you want the animation.
+                 * You can use the animation with paging.
+                 * */
+                setAnimationEnabled(true)
+                /** This function here to tell the adapter what is the list you want to use. */
+
+                setItems(it)
+                notifyDataSetChanged()
+            }
+        })
+    }
+}
+```
 
 ## Contributing
 
