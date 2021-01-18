@@ -4,7 +4,7 @@
 
 # Android library for Bases classes
 
-Useful library to help Android developers to print with (Bluetooth, TCP, USB) ESC/POS thermal printers.
+Useful library to help Android developers handle databinding, adapters and paging.
 
 ## ✨ Supporting
 
