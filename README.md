@@ -1,7 +1,6 @@
 [![Jitpack package repository - Bases-Android](https://jitpack.io/v/KhairoHumsi/Bases.svg)](https://jitpack.io/#KhairoHumsi/Bases)
 
 
-
 # Android library for Bases classes
 
 Useful library to help Android developers handle databinding, adapters and paging.
