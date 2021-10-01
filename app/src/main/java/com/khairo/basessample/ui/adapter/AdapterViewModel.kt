@@ -1,14 +1,17 @@
 package com.khairo.basessample.ui.adapter
 
 import androidx.databinding.ObservableField
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.khairo.basessample.models.amount.AmountModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AdapterViewModel @ViewModelInject constructor() : ViewModel() {
+@HiltViewModel
+class AdapterViewModel @Inject constructor() : ViewModel() {
 
-    val amount = ObservableField(0)
+    private val _amount = ObservableField(0)
+    val amount get() = _amount
 
     val amountLiveData = MutableLiveData<List<AmountModel>>().apply {
         val array = ArrayList<AmountModel>()
@@ -20,6 +23,6 @@ class AdapterViewModel @ViewModelInject constructor() : ViewModel() {
     }
 
     fun changeAmount(newAmount: Int) {
-        amount.set(newAmount)
+        _amount.set(newAmount)
     }
 }

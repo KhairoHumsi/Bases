@@ -1,6 +1,7 @@
 package com.khairo.basessample.ui.adapter
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.khairo.bases.data.BaseAdapter
 import com.khairo.bases.data.BaseViewHolder
 import com.khairo.basessample.R
@@ -14,12 +15,13 @@ import com.khairo.basessample.models.amount.AmountModel
  * And you need to pass the layout of your view, in my case [amout_item], I need it to inflate your view.
  * */
 class AnimatedNormalAdapter(private val viewModel: AdapterViewModel) :
-    BaseAdapter<AmountModel, BaseViewHolder<AmountModel>, AmountItemBinding>(R.layout.amount_item) {
+    BaseAdapter<AmountModel, BaseViewHolder<AmountModel>, AmountItemBinding>() {
+
+    /** This function here to init the [LayoutRes] */
+    override fun getLayoutId(): Int = R.layout.amount_item
 
     /** This function here to init the [binding] using bind function */
-    override fun initBinding(view: View) {
-        binding = AmountItemBinding.bind(view)
-    }
+    override fun initBinding(view: View) = AmountItemBinding.bind(view)
 
     /** This function here to init the [ViewHolder] */
     override fun initViewHolder(layout: Int, view: View): BaseViewHolder<AmountModel> = ViewHolder()
@@ -39,11 +41,11 @@ class AnimatedNormalAdapter(private val viewModel: AdapterViewModel) :
 
         fun check(amount: Int) {
             selectedPosition = if (selectedPosition == layoutPosition) {
-                viewModel.amount.set(0)
+                viewModel.changeAmount(0)
                 -1
 
             } else {
-                viewModel.amount.set(amount)
+                viewModel.changeAmount(amount)
                 layoutPosition
             }
         }

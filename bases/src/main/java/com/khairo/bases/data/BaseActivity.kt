@@ -1,17 +1,24 @@
 package com.khairo.bases.data
 
 import android.os.Bundle
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import com.akexorcist.localizationactivity.ui.LocalizationActivity
 
-open class BaseActivity<T : ViewDataBinding>(private var viewId: Int) : AppCompatActivity() {
+abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity() {
 
-    lateinit var binding: T
+    private lateinit  var _binding: VB
+    open val binding get() = _binding
+
+    @LayoutRes
+    abstract fun getLayoutId(): Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, viewId)
+        setBindingVariables()
+        _binding = DataBindingUtil.setContentView(this, getLayoutId())
     }
+
+    fun setBindingVariables() { }
 }

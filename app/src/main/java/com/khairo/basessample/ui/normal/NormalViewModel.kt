@@ -17,7 +17,7 @@ class NormalViewModel : ViewModel() {
                     show(fragmentTransaction, "dialogFragment")
                 }
 
-                "adapter" -> MainActivity.navController.navigate(R.id.action_normalFragment_to_adapterFragment)
+                "adapter" -> MainActivity.instance.navController.navigate(R.id.action_normalFragment_to_adapterFragment)
             }
 
         }

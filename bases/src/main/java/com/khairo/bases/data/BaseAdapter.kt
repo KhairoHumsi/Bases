@@ -5,20 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.khairo.bases.utils.setAnimation
 import java.util.*
-import kotlin.collections.HashMap
 
-abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, V : ViewDataBinding>(private var viewId: Int) :
+abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding> :
     PagingDataAdapter<T, B>(COMPARATOR<T>().diffUtil) {
 
     /**
      * Animation Info
      */
-    private var animationEnabled = false
+    private var animationEnabled = true
     private var animationType = Animation.RELATIVE_TO_SELF
     private var animationFromX = 0f
     private var animationToX = 1f
@@ -29,7 +29,7 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, V : ViewDataBinding>(
     /**
      * Paging Info
      */
-    private var pagingEnabled = false
+    private var pagingEnabled = true
 
 
     /**
@@ -37,8 +37,8 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, V : ViewDataBinding>(
      */
     var selectedPosition = -1
 
-    protected lateinit var binding: V
-
+    private var _binding: VB? = null
+    open val binding get() = _binding!!
 
     /**
      * Selection Map
@@ -118,14 +118,17 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, V : ViewDataBinding>(
             items[position] = model
     }
 
-    /** This function here to init your [binding] */
-    protected abstract fun initBinding(view: View)
+    @LayoutRes
+    abstract fun getLayoutId(): Int
+
+    /** This function here to init your [_binding] */
+    protected abstract fun initBinding(view: View) : VB
 
     private fun inflateView(viewGroup: ViewGroup): View =
-        LayoutInflater.from(viewGroup.context).inflate(viewId, viewGroup, false)
+        LayoutInflater.from(viewGroup.context).inflate(getLayoutId(), viewGroup, false)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): B {
-        initBinding(view = inflateView(parent))
+        _binding = initBinding(inflateView(parent))
         return initViewHolder(viewType, inflateView(parent))
     }
 

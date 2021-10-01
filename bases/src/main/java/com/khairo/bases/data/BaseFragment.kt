@@ -4,20 +4,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
-open class BaseFragment<T : ViewDataBinding>(private var viewId: Int) : Fragment() {
+abstract class BaseFragment<VB : ViewDataBinding> : Fragment() {
 
-    lateinit var binding: T
+    private lateinit  var _binding: VB
+    open val binding get() = _binding
+
+    @LayoutRes
+    abstract fun getLayoutId(): Int
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, viewId, container, false)
-        return binding.root
+        _binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
+        setBindingVariables()
+        return _binding.root
     }
+
+    abstract fun setBindingVariables()
+
+    abstract fun setUpViewAndActions()
 }
