@@ -13,8 +13,9 @@ import com.khairo.bases.utils.setAnimation
 import java.util.*
 import kotlin.collections.HashMap
 
-abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>(@LayoutRes private var viewId: Int) :
-    PagingDataAdapter<T, B>(COMPARATOR<T>().diffUtil) {
+abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>(
+    @LayoutRes private val viewId: Int
+) : PagingDataAdapter<T, B>(COMPARATOR<T>().diffUtil) {
 
     /**
      * Animation Info
@@ -30,7 +31,7 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>
     /**
      * Paging Info
      */
-    private var pagingEnabled = false
+    private var pagingEnabled = true
 
 
     /**
@@ -120,39 +121,6 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>
             items[position] = model
     }
 
-    /** This function here to init your [binding] */
-    protected abstract fun initBinding(view: View) : VB
-
-    private fun inflateView(viewGroup: ViewGroup): View =
-        LayoutInflater.from(viewGroup.context).inflate(viewId, viewGroup, false)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): B {
-        _binding = initBinding(view = inflateView(parent))
-        return initViewHolder(viewType, inflateView(parent))
-    }
-
-    override fun onBindViewHolder(holder: B, position: Int) {
-        if (isPagingEnabled()) holder.bind(getItem(position)!!, position)
-        else holder.bind(getRow(position), position)
-        if (isAnimationEnabled())
-            position.setAnimation(
-                holder.itemView,
-                selectedPosition,
-                animationFromX,
-                animationToX,
-                animationFromY,
-                animationToY,
-                animationType
-            )
-    }
-
-    override fun getItemCount(): Int = if (isPagingEnabled()) super.getItemCount() else items.size
-
-    protected abstract fun initViewHolder(layout: Int, view: View): B
-
-    abstract inner class ViewHolders(binding: ViewDataBinding) : BaseViewHolder<T>(binding.root)
-
-
     /**
      * isPagingEnabled setter and getter
      */
@@ -161,7 +129,6 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>
     fun setPagingEnabled(check: Boolean) {
         pagingEnabled = check
     }
-
 
     /**
      * Animation setter and getter
@@ -182,6 +149,34 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>
         animationToX = toX
         animationFromY = fromY
         animationToY = toY
+    }
+
+    /** This function here to init your [binding] */
+    protected abstract fun initBinding(view: View): VB
+
+    protected abstract fun initViewHolder(layout: Int, view: View): B
+
+    private fun inflateView(viewGroup: ViewGroup): View =
+        LayoutInflater.from(viewGroup.context).inflate(viewId, viewGroup, false)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): B {
+        _binding = initBinding(view = inflateView(parent))
+        return initViewHolder(viewType, inflateView(parent))
+    }
+
+    override fun onBindViewHolder(holder: B, position: Int) {
+        if (isPagingEnabled()) getItem(position)?.let { holder.bind(it, position) }
+        else holder.bind(getRow(position), position)
+        if (isAnimationEnabled())
+            position.setAnimation(
+                holder.itemView,
+                selectedPosition,
+                animationFromX,
+                animationToX,
+                animationFromY,
+                animationToY,
+                animationType
+            )
     }
 }
 

@@ -24,7 +24,7 @@ class AnimatedNormalAdapter(private val viewModel: AdapterViewModel) :
     override fun initViewHolder(layout: Int, view: View): BaseViewHolder<AmountModel> = ViewHolder()
 
     /** This class here is your [ViewHolder], but you have to extend the ViewHolders and pass the [binding] */
-    inner class ViewHolder : ViewHolders(binding = binding) {
+    inner class ViewHolder : BaseViewHolder<AmountModel>(binding.root) {
 
         /** This override function comes from the [BaseViewHolder] */
         override fun bind(model: AmountModel, position: Int) {
