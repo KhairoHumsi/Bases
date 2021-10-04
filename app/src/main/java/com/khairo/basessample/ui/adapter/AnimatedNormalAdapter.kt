@@ -15,10 +15,7 @@ import com.khairo.basessample.models.amount.AmountModel
  * And you need to pass the layout of your view, in my case [amout_item], I need it to inflate your view.
  * */
 class AnimatedNormalAdapter(private val viewModel: AdapterViewModel) :
-    BaseAdapter<AmountModel, BaseViewHolder<AmountModel>, AmountItemBinding>() {
-
-    /** This function here to init the [LayoutRes] */
-    override fun getLayoutId(): Int = R.layout.amount_item
+    BaseAdapter<AmountModel, BaseViewHolder<AmountModel>, AmountItemBinding>(R.layout.amount_item) {
 
     /** This function here to init the [binding] using bind function */
     override fun initBinding(view: View) = AmountItemBinding.bind(view)

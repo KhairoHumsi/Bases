@@ -11,14 +11,15 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.khairo.bases.utils.setAnimation
 import java.util.*
+import kotlin.collections.HashMap
 
-abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding> :
+abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>(@LayoutRes private var viewId: Int) :
     PagingDataAdapter<T, B>(COMPARATOR<T>().diffUtil) {
 
     /**
      * Animation Info
      */
-    private var animationEnabled = true
+    private var animationEnabled = false
     private var animationType = Animation.RELATIVE_TO_SELF
     private var animationFromX = 0f
     private var animationToX = 1f
@@ -29,7 +30,7 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>
     /**
      * Paging Info
      */
-    private var pagingEnabled = true
+    private var pagingEnabled = false
 
 
     /**
@@ -39,6 +40,7 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>
 
     private var _binding: VB? = null
     open val binding get() = _binding!!
+
 
     /**
      * Selection Map
@@ -118,17 +120,14 @@ abstract class BaseAdapter<T : Any, B : BaseViewHolder<T>, VB : ViewDataBinding>
             items[position] = model
     }
 
-    @LayoutRes
-    abstract fun getLayoutId(): Int
-
-    /** This function here to init your [_binding] */
+    /** This function here to init your [binding] */
     protected abstract fun initBinding(view: View) : VB
 
     private fun inflateView(viewGroup: ViewGroup): View =
-        LayoutInflater.from(viewGroup.context).inflate(getLayoutId(), viewGroup, false)
+        LayoutInflater.from(viewGroup.context).inflate(viewId, viewGroup, false)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): B {
-        _binding = initBinding(inflateView(parent))
+        _binding = initBinding(view = inflateView(parent))
         return initViewHolder(viewType, inflateView(parent))
     }
 
